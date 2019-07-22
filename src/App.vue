@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <img class="logo" alt="Vue logo" src="./assets/images/CurCal2.svg">
+    <FileUpload class="file-upload" msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import FileUpload from './components/FileUpload.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    FileUpload
   }
 }
 </script>
@@ -24,5 +24,16 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  height: 100vh;
+
+}
+.logo {
+  height: 40em;
+}
+.file-upload {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%);
 }
 </style>
