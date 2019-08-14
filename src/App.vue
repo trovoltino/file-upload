@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <img class="logo" alt="Vue logo" src="./assets/images/CurCal2.svg">
     <FileUpload class="file-upload" msg="Welcome to Your Vue.js App"/>
   </div>
 </template>

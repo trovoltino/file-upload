@@ -2,22 +2,31 @@
   <div class="file-upload">
     <div id="file-drag-drop">
       <form ref="fileform" class="drop-form">
-        <input v-model="email" type="text" placeholder="Please enter your Email" class="drop-email">
-        <img src="../assets/images/download.svg" class="drop-icon" alt="">
-        <span class="drop-files" name="sampleFile"><b>Choose a file</b> and drag it here.</span>
-        <input type="file"  @change="upload($event)" id="file-input">
-        <span class="post-msg">{{response}}</span>
+        <input v-model="email" v-bind:class="{ missingEmail: emailProvided }" type="text" placeholder="Please enter your Email" class="drop-email">
+        <img v-if="!fileSent" v-bind:class="{ invisible: dropIconInvisible }" src="../assets/images/download.svg" class="drop-icon" alt="drag and drop">
+        <img v-if="fileSent" v-bind:class="{ active: fileSent }" src="..\assets\images\checked.svg" alt="">
+        <span v-if="!fileSent" v-bind:class="{ invisible: !supportedFileFormat }" class="drop-files" name="sampleFile"><b>Choose a file</b> and drag it here.</span>
+        <span v-else class="green"><b>File has been uploaded successfully</b>, we will send results shortly.</span>
+        <label v-if="!fileSent" class="file-select">
+          <div class="select-button">Select File</div>
+          <input  type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
+        </label>
+        <button v-else class="reset-btn" @click="clearData">Upload More Files</button>
       </form>
+      
+      <p v-bind:class="{ invisible: supportedFileFormat }" class="invalid-file">Please provide us with <b>.XML</b> or <b>.PDF</b> file format</p>
     </div>
-    <div v-for="(file, key) in files" v-bind:key="key" class="file-listing"> 
-      <img class="preview" v-bind:ref="'preview'+parseInt( key )"/>
-      {{ file.name }}
-      <div class="remove-container">
-        <a class="remove" v-on:click="removeFile( key )">Remove</a>
+    <div class="files-container">
+      <div v-for="(file, key) in files" v-bind:key="key" class="file-container"> 
+      <!-- <img class="preview" v-bind:ref="'preview'+parseInt( key )"/> -->
+        <b>{{ file.name }}</b>
+        <div class="remove-container">
+          <a class="remove" v-on:click="removeFile( key )">Delete</a>
+        </div>
       </div>
+      <a class="submit-button" v-on:click="submitFiles()" v-show="files.length > 0">Submit</a>
     </div>
     
-    <a class="submit-button" v-on:click="submitFiles()" v-show="files.length > 0">Submit</a>
   </div>
 </template>
 
@@ -37,7 +46,11 @@ export default {
       dragAndDropCapable: false,
       files: [],
       response: '',
-      email:''
+      email: null,
+      fileSent: false,
+      dropIconInvisible: false,
+      supportedFileFormat: true,
+      emailProvided: false
     }
   },
   methods: {
@@ -51,22 +64,22 @@ export default {
       
     },
     async submitFiles(err){
-      /*
-        Initialize the form data
-      */
-      let formData = new FormData();
-      /*
-        Iteate over any file sent over appending the files
-        to the form data.
-      */
-      for( var i = 0; i < this.files.length; i++ ){
-        let file = this.files[i];
-
-        formData.append('files[' + i + ']', file);
+      if(this.email) {
+        this.emailProvided = false;
+        /*
+          Initialize the form data
+        */
+        let formData = new FormData();
+        /*
+          Iteate over any file sent over appending the files
+          to the form data.
+        */
+        for( var i = 0; i < this.files.length; i++ ){
+          let file = this.files[i];
+          formData.append('files[' + i + ']', file);
+        }
         formData.append('email', this.email);
-      }
-
-      try {
+        try {
           const res = await axios.post(url,
           formData,
           {
@@ -75,9 +88,16 @@ export default {
             }
           });
           this.response = res['data'];
+          if(res['data'] == 'File uploaded!') {
+            this.fileSent = true;
+            this.files = [];
+          }
         } catch {
           this.response = err;
         }
+      } else {
+        this.emailProvided = true;
+      }
     },
     determineDragAndDropCapable(){
     const div = document.createElement('div');
@@ -94,46 +114,52 @@ export default {
             && 'FormData' in window
             && 'FileReader' in window;
     },
-    removeFile( key ){
+    async removeFile(key) {
       this.files.splice( key, 1 );
-    },
-    getImagePreviews(){
-    /*
-      Iterate over all of the files and generate an image preview for each one.
-    */
-      for( let i = 0; i < this.files.length; i++ ){
-        /*
-          Ensure the file is an image file
-        */
-        if ( /\.(jpe?g|png|gif)$/i.test( this.files[i].name ) ) {
-
-          let reader = new FileReader();
-          /*
-            Add an event listener for when the file has been loaded
-            to update the src on the file preview.
-          */
-          reader.addEventListener("load", function(){
-            this.$refs['preview'+parseInt( i )][0].src = reader.result;
-          }.bind(this), false);
-          /*
-            Read the data for the file in through the reader. When it has
-            been loaded, we listen to the event propagated and set the image
-            src to what was loaded from the reader.
-          */
-          reader.readAsDataURL( this.files[i] );
-        }else{
-          /*
-            We do the next tick so the reference is bound and we can access it.
-          */
-          this.$nextTick(function(){
-            this.$refs['preview'+parseInt( i )][0].src = '../assets/images/fewclicks.png';
-          });
-        }
+      
+      if(this.files.length < 1){
+        this.dropIconInvisible = false;
+        await this.$nextTick;
       }
+    },
+    handleFileUpload(){
+      for( let i = 0; i < this.$refs.file.files.length; i++ ){
+        this.files.push( this.$refs.file.files[i] )
+        this.checkFile();
+      }
+    },
+    addFile(e){
+      for( let i = 0; i < e.dataTransfer.files.length; i++ ){
+        //Check if fail is supported format(XML, PDF)
+          this.files.push( e.dataTransfer.files[i] );
+          this.checkFile();
+      }
+    },
+    clearData(){
+      setTimeout(() => {
+        this.files = [];
+        this.fileSent = false;
+      }, 20);
+      
+      
+    },
+    checkFile(){
+      this.supportedFileFormat= true;
+      this.files.forEach(file => {
+        if (/\.(pdf|xml)/.test(file.name)) {
+          this.dropIconInvisible = true;
+        } else {
+          this.supportedFileFormat= false;
+        }
+      });
+      if(this.supportedFileFormat === false) {
+        this.clearData();
+      }
+      //this.supportedFileFormat ? true : this.files.length = 0;
     }
   },
   mounted(){
-  
+    this.supportedFileFormat= true;
     this.dragAndDropCapable = this.determineDragAndDropCapable();
 
     //If drag and drop capable, then we continue to bind events to our elements.
@@ -143,6 +169,7 @@ export default {
         for the fileform.
       */
       ['drag', 'dragstart', 'dragend', 'dragover', 'dragenter', 'dragleave', 'drop'].forEach( function( evt ) {
+     
         /*
           For each event add an event listener that prevents the default action
           (opening the file in the browser) and stop the propagation of the event (so
@@ -160,10 +187,18 @@ export default {
           Capture the files from the drop event and add them to our local files
           array.
         */
+        // for( let i = 0; i < e.dataTransfer.files.length; i++ ){
+        //   if (/\.(pdf|xml)/.test(this.$refs.file.files[i].name)) {
+        //     this.files.push( e.dataTransfer.files[i] );
+        //     this.dropIconInvisible = true;
+        //   } else {
+        //     this.supportedFileFormat= false;
+        //   }
+        // }
         for( let i = 0; i < e.dataTransfer.files.length; i++ ){
           this.files.push( e.dataTransfer.files[i] );
+          this.checkFile();
         }
-        this.getImagePreviews();
       }.bind(this));
     }
   },
@@ -181,13 +216,46 @@ export default {
     height: 20em;
     background: rgb(206, 216, 246);
   }
+  #file {
+    display: none;
+  }
+  .file-select {
+    position: relative;
+    top: -10px;
+    z-index: 10;
+  }
+  .file-select > .select-button {
+    padding: 0.4em;
+    z-index: 100;
+    color: white;
+    background-color: rgb(49, 59, 181);
+    border-radius: .3rem;
+    text-align: center;
+    font-weight: bold;
+  }
+  .reset-btn {
+    z-index: 10;
+    padding: 0.4em;
+    z-index: 100;
+    color: white;
+    background-color: rgb(62, 64, 88);
+    border-radius: .3rem;
+    text-align: center;
+    font-weight: bold;
+  }
   .drop-email {
     position: relative;
-    top: -2em;
+    top: -1.5em;
     width: 20em;
     height: 2em;
     text-align: center;
     font-size: 0.9em;
+    border: solid rgb(79, 137, 195) 2px;
+    
+  }
+  .missingEmail::placeholder{
+    color:red;
+    opacity: 1;
   }
   .drop-form::after {
     margin: 1em 1em;
@@ -199,16 +267,34 @@ export default {
     border: dashed rgb(79, 137, 195) 2px;
   }
   .drop-icon {
-    content: '';
     position: relative;
     width: 4.3em;
     height: 4.3em;
   }
-  div.file-listing img{
+  .files-container {
+    position: absolute;
+    top: 54%;
+    left: 50%;
+    transform: translate(-50%, -90%);
+    z-index: 1000;
+   
+    overflow: hidden;
+  }
+  .file-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: 1.4em;
+    border-bottom: 1px solid gray;
+    
+    
+  }
+  div.files-listing img{
     height: 100px;
   }
   div.remove-container{
   text-align: center;
+  margin-left: 2em;
   }
 
   div.remove-container a{
@@ -220,15 +306,38 @@ export default {
   }
   a.submit-button{
     display: block;
+    position: relative;
+    top: 0.4em;
     margin: auto;
     text-align: center;
-    width: 200px;
+    width: 14em;
     padding: 10px;
     text-transform: uppercase;
     background-color: rgb(138, 161, 236);
     color: white;
     font-weight: bold;
-    margin-top: 20px;
+    
     cursor: pointer;
+  }
+  .active {
+    height: 5em;
+    background: white;
+    border-radius: 50%;
+    margin: -1.0em;
+    fill: rgb(62, 64, 88);
+  }
+  .green b {
+    color: rgb(62, 64, 88);
+  }
+  .invisible {
+    visibility: hidden;
+  }
+  .invalid-file {
+    color: red;
+    font-size: 1.2em;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, 40%);
   }
 </style>
