@@ -3,8 +3,8 @@
     <div id="file-drag-drop">
       <form ref="fileform" class="drop-form">
         <input v-model="email" v-bind:class="{ missingEmail: emailProvided }" type="text" placeholder="Please enter your Email" class="drop-email">
-        <img v-if="!fileSent" v-bind:class="{ invisible: dropIconInvisible }" src="../assets/images/download.svg" class="drop-icon" alt="drag and drop">
-        <img v-if="fileSent" v-bind:class="{ active: fileSent }" src="..\assets\images\checked.svg" alt="">
+        <img v-if="!fileSent" v-bind:class="{ invisible: dropIconInvisible }" src="@/assets/images/download.svg" class="drop-icon" alt="drag and drop">
+        <img v-if="fileSent" v-bind:class="{ active: fileSent }" src="@/assets/images/checked.svg" alt="">
         <span v-if="!fileSent" v-bind:class="{ invisible: !supportedFileFormat }" class="drop-files" name="sampleFile"><b>Choose a file</b> and drag it here.</span>
         <span v-else class="green"><b>File has been uploaded successfully</b>, we will send results shortly.</span>
         <label v-if="!fileSent" class="file-select">
