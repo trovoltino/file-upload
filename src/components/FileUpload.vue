@@ -14,7 +14,7 @@
         <button v-else class="reset-btn" @click="clearData">Upload More Files</button>
       </form>
       
-      <p v-bind:class="{ invisible: supportedFileFormat }" class="invalid-file">Please provide us with <b>.XML</b> or <b>.PDF</b> file format</p>
+      <p v-bind:class="{ invisible: supportedFileFormat }" class="invalid-file">Please provide us with <b>.PDF</b> file format</p>
     </div>
     <div class="files-container">
       <div v-for="(file, key) in files" v-bind:key="key" class="file-container"> 
@@ -273,7 +273,7 @@ export default {
   }
   .files-container {
     position: absolute;
-    top: 54%;
+    top: 56%;
     left: 50%;
     transform: translate(-50%, -90%);
     z-index: 1000;
@@ -307,8 +307,9 @@ export default {
   a.submit-button{
     display: block;
     position: relative;
-    top: 0.4em;
     margin: auto;
+    margin-top: 0.3
+    em;
     text-align: center;
     width: 14em;
     padding: 10px;
