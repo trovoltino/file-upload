@@ -164,12 +164,8 @@ export default {
 
     //If drag and drop capable, then we continue to bind events to our elements.
     if( this.dragAndDropCapable ){
-      /*
-        Listen to all of the drag events and bind an event listener to each
-        for the fileform.
-      */
+
       ['drag', 'dragstart', 'dragend', 'dragover', 'dragenter', 'dragleave', 'drop'].forEach( function( evt ) {
-     
         /*
           For each event add an event listener that prevents the default action
           (opening the file in the browser) and stop the propagation of the event (so
@@ -181,20 +177,8 @@ export default {
         }.bind(this), false);
       }.bind(this));
 
-      //Add an event listener for drop to the form
       this.$refs.fileform.addEventListener('drop', function(e){
-        /*
-          Capture the files from the drop event and add them to our local files
-          array.
-        */
-        // for( let i = 0; i < e.dataTransfer.files.length; i++ ){
-        //   if (/\.(pdf|xml)/.test(this.$refs.file.files[i].name)) {
-        //     this.files.push( e.dataTransfer.files[i] );
-        //     this.dropIconInvisible = true;
-        //   } else {
-        //     this.supportedFileFormat= false;
-        //   }
-        // }
+        
         for( let i = 0; i < e.dataTransfer.files.length; i++ ){
           this.files.push( e.dataTransfer.files[i] );
           this.checkFile();
