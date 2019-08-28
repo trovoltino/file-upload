@@ -33,8 +33,9 @@
 <script>
 
 import axios from 'axios';
-const url = 'http://localhost:5555/upload';
-//const url = 'http://127.0.0.1:5000/GetEmailandPDF';
+//const url = 'http://localhost:5555/upload';
+//const url = 'https://file-drop.herokuapp.com/upload';
+const liveUrl = '194.19.232.2:5555/upload';
 
 export default {
   name: 'FileUpload',
@@ -80,7 +81,7 @@ export default {
         }
         formData.append('email', this.email);
         try {
-          const res = await axios.post(url,
+          const res = await axios.post(liveUrl,
           formData,
           {
             headers: {
@@ -190,7 +191,8 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped>
+
   .drop-form {
     display: flex;
     flex-direction: column;
@@ -199,6 +201,16 @@ export default {
     width: 40em;
     height: 20em;
     background: rgb(206, 216, 246);
+
+    &::after {
+      margin: 1em 1em;
+      content: '';
+      position: absolute;
+      left: 0px;
+      height: 14em;
+      width: 38em;
+      border: dashed $border-color 2px;
+    }
   }
   #file {
     display: none;
@@ -216,6 +228,10 @@ export default {
     border-radius: .3rem;
     text-align: center;
     font-weight: bold;
+    cursor: pointer;
+    &:hover {
+      background: rgb(16, 23, 104);
+    }
   }
   .reset-btn {
     z-index: 10;
@@ -234,21 +250,11 @@ export default {
     height: 2em;
     text-align: center;
     font-size: 0.9em;
-    border: solid rgb(79, 137, 195) 2px;
-    
+    border: solid $border-color 2px;
   }
   .missingEmail::placeholder{
     color:red;
     opacity: 1;
-  }
-  .drop-form::after {
-    margin: 1em 1em;
-    content: '';
-    position: absolute;
-    left: 0px;
-    height: 14em;
-    width: 38em;
-    border: dashed rgb(79, 137, 195) 2px;
   }
   .drop-icon {
     position: relative;
@@ -273,27 +279,30 @@ export default {
     
     
   }
-  div.files-listing img{
-    height: 100px;
+  div.files-listing {
+    img {
+      height: 100px;
+    }
   }
   div.remove-container{
-  text-align: center;
-  margin-left: 2em;
+    text-align: center;
+    margin-left: 2em;
   }
 
-  div.remove-container a{
-    background: red;
-    color: white;
-    cursor: pointer;
-    margin: 2px;
-    padding: 1px 5px;
+  div.remove-container {
+    a {
+      background: red;
+      color: white;
+      cursor: pointer;
+      margin: 2px;
+      padding: 1px 5px;
+    }
   }
   a.submit-button{
     display: block;
     position: relative;
     margin: auto;
-    margin-top: 0.3
-    em;
+    margin-top: 0.3em;
     text-align: center;
     width: 14em;
     padding: 10px;
@@ -301,8 +310,11 @@ export default {
     background-color: rgb(138, 161, 236);
     color: white;
     font-weight: bold;
-    
     cursor: pointer;
+    
+    &:hover {
+      background: rgb(119, 145, 231);
+    }
   }
   .active {
     height: 5em;
@@ -311,8 +323,10 @@ export default {
     margin: -1.0em;
     fill: rgb(62, 64, 88);
   }
-  .green b {
-    color: rgb(62, 64, 88);
+  .green {
+    b {
+      color: rgb(62, 64, 88);
+    }
   }
   .invisible {
     visibility: hidden;
