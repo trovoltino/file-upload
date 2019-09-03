@@ -34,10 +34,10 @@
 
 import axios from 'axios';
 //const url = 'http://localhost:5555/upload';
-//const url = 'http://127.0.0.1:5000/GetEmailandPDF';
+//const url = 'https://file-drop.herokuapp.com/upload';
+//Latest changes for accesing backend.
 
-const liveUrl = '87.99.88.126:5555/upload';
-
+const liveUrl = '87.99.88.126:5550/upload';
 
 export default {
   name: 'FileUpload',
