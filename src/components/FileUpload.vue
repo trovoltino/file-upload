@@ -35,7 +35,7 @@
 import axios from 'axios';
 //const liveUrl = 'http://localhost:5555/upload';
 //const url = 'https://file-drop.herokuapp.com/upload';
-const liveUrl = 'http://87.99.88.126:5550/upload';
+const liveUrl = 'https://87.99.88.126:5550/upload';
 // Remove additional content
 
 export default {
