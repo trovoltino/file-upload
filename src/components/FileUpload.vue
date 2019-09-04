@@ -34,9 +34,8 @@
 
 import axios from 'axios';
 //const liveUrl = 'http://localhost:5555/upload';
-//const url = 'https://file-drop.herokuapp.com/upload';
-const liveUrl = 'https://87.99.88.126:5550/upload';
-// Remove additional content
+const url = 'https://file-drop.herokuapp.com/upload';
+//const liveUrl = 'https://87.99.88.126:5550/upload';
 
 export default {
   name: 'FileUpload',
@@ -62,7 +61,6 @@ export default {
 
       data.append('name', 'my-file')
       data.append('file', file)
-
       
     },
     async submitFiles(err){
