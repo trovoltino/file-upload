@@ -34,7 +34,7 @@
 
 import axios from 'axios';
 //const liveUrl = 'http://localhost:5555/upload';
-const url = 'https://file-drop.herokuapp.com/upload';
+const demoUrl = 'https://file-drop.herokuapp.com/upload';
 //const liveUrl = 'https://87.99.88.126:5550/upload';
 
 export default {
@@ -80,7 +80,7 @@ export default {
         }
         formData.append('email', this.email);
         try {
-          const res = await axios.post(liveUrl,
+          const res = await axios.post(demoUrl,
           formData,
           {
             headers: {
