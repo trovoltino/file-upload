@@ -19,7 +19,7 @@
     <div class="files-container">
       <div v-for="(file, key) in files" v-bind:key="key" class="file-container"> 
       <!-- <img class="preview" v-bind:ref="'preview'+parseInt( key )"/> -->
-        <b>{{ file.name }}</b>
+        <b>{{ file.name.length>27 ? `${file.name.substring(0, 25)}...`: file.name}}</b>
         <div class="remove-container">
           <a class="remove" v-on:click="removeFile( key )">Delete</a>
         </div>
@@ -35,8 +35,7 @@
 import axios from 'axios';
 //const liveUrl = 'http://localhost:5555/upload';
 //const url = 'https://file-drop.herokuapp.com/upload';
-const liveUrl = 'https://87.99.88.126:5550/upload';
-// Remove additional content
+const liveUrl = 'http://87.99.88.126:5550/upload';
 
 export default {
   name: 'FileUpload',
