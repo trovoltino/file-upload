@@ -1,41 +1,41 @@
 <template>
   <div class="file-upload">
+    <div v-if="processingFile" class="cover"></div>
     <div id="file-drag-drop">
       <form ref="fileform" class="drop-form">
-        <input v-model="email" v-bind:class="{ missingEmail: emailProvided }" type="text" placeholder="Please enter your Email" class="drop-email">
+        <input v-model="email" v-bind:class="{ missingEmail: emailProvided }" type="text" placeholder="Please enter your Email to receve results" class="drop-email">
         <img v-if="!fileSent" v-bind:class="{ invisible: dropIconInvisible }" src="@/assets/images/download.svg" class="drop-icon" alt="drag and drop">
         <img v-if="fileSent" v-bind:class="{ active: fileSent }" src="@/assets/images/checked.svg" alt="">
-        <span v-if="!fileSent" v-bind:class="{ invisible: !supportedFileFormat }" class="drop-files" name="sampleFile"><b>Choose a file</b> and drag it here.</span>
+        <span v-if="!fileSent" v-bind:class="{ invisible: !supportedFileFormat }" class="drop-files" name="sampleFile"><b>Choose PDF files</b> and drag it here.</span>
         <span v-else class="green"><b>File has been uploaded successfully</b>, we will send results shortly.</span>
         <label v-if="!fileSent" class="file-select">
           <div class="select-button">Select File</div>
-          <input  type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
+          <input  type="file" id="file" ref="file" multiple v-on:change="handleFileUpload()"/>
         </label>
         <button v-else class="reset-btn" @click="clearData">Upload More Files</button>
       </form>
-      
+      <div v-if="processingFile" class="lds-dual-ring"></div>
       <p v-bind:class="{ invisible: supportedFileFormat }" class="invalid-file">Please provide us with <b>.PDF</b> file format</p>
     </div>
     <div class="files-container">
       <div v-for="(file, key) in files" v-bind:key="key" class="file-container"> 
       <!-- <img class="preview" v-bind:ref="'preview'+parseInt( key )"/> -->
-        <b>{{ file.name.length>27 ? `${file.name.substring(0, 25)}...`: file.name}}</b>
+        <b>{{ file.name.length>25 ? `${file.name.substring(0, 23)}...`: file.name}}</b>
         <div class="remove-container">
           <a class="remove" v-on:click="removeFile( key )">Delete</a>
         </div>
       </div>
       <a class="submit-button" v-on:click="submitFiles()" v-show="files.length > 0">Submit</a>
     </div>
-    
   </div>
 </template>
 
 <script>
 
 import axios from 'axios';
-//const liveUrl = 'http://localhost:5555/upload';
-//const url = 'https://file-drop.herokuapp.com/upload';
-const liveUrl = 'http://87.99.88.126:5550/upload';
+
+//const liveUrl = 'https://87.99.88.126:5550/upload';
+const liveUrl = 'https://files.adverts.lv:5550/upload';
 
 export default {
   name: 'FileUpload',
@@ -51,7 +51,8 @@ export default {
       fileSent: false,
       dropIconInvisible: false,
       supportedFileFormat: true,
-      emailProvided: false
+      emailProvided: false,
+      processingFile: false
     }
   },
   methods: {
@@ -66,6 +67,7 @@ export default {
     },
     async submitFiles(err){
       if(this.email) {
+        this.processingFile = false;
         this.emailProvided = false;
         /*
           Initialize the form data
@@ -92,8 +94,10 @@ export default {
           if(res['data'] == 'File uploaded!') {
             this.fileSent = true;
             this.files = [];
+            this.processingFile = false;
           }
         } catch {
+          this.processingFile = false;
           this.response = err;
         }
       } else {
@@ -198,9 +202,9 @@ export default {
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    width: 40em;
+    width: 28em;
     height: 20em;
-    background: rgb(206, 216, 246);
+    background: rgb(214, 255, 214);
 
     &::after {
       margin: 1em 1em;
@@ -208,7 +212,7 @@ export default {
       position: absolute;
       left: 0px;
       height: 14em;
-      width: 38em;
+      width: 25.8em;
       border: dashed $border-color 2px;
     }
   }
@@ -224,13 +228,12 @@ export default {
     padding: 0.4em;
     z-index: 100;
     color: white;
-    background-color: rgb(49, 59, 181);
-    border-radius: .3rem;
+    background-color: $button-color;
     text-align: center;
     font-weight: bold;
     cursor: pointer;
     &:hover {
-      background: rgb(16, 23, 104);
+      background: rgb(27, 170, 46);
     }
   }
   .reset-btn {
@@ -238,8 +241,7 @@ export default {
     padding: 0.4em;
     z-index: 100;
     color: white;
-    background-color: rgb(62, 64, 88);
-    border-radius: .3rem;
+    background-color: $button-color;
     text-align: center;
     font-weight: bold;
   }
@@ -266,7 +268,7 @@ export default {
     top: 56%;
     left: 50%;
     transform: translate(-50%, -90%);
-    z-index: 1000;
+    z-index: 30;
    
     overflow: hidden;
   }
@@ -276,8 +278,6 @@ export default {
     align-items: flex-start;
     height: 1.4em;
     border-bottom: 1px solid gray;
-    
-    
   }
   div.files-listing {
     img {
@@ -307,13 +307,13 @@ export default {
     width: 14em;
     padding: 10px;
     text-transform: uppercase;
-    background-color: rgb(138, 161, 236);
+    background-color: $button-color;
     color: white;
     font-weight: bold;
     cursor: pointer;
     
     &:hover {
-      background: rgb(119, 145, 231);
+      background: rgb(27, 170, 46);
     }
   }
   .active {
@@ -338,5 +338,43 @@ export default {
     left: 50%;
     top: 50%;
     transform: translate(-50%, 40%);
+  }
+  // Loading icon
+
+  .lds-dual-ring {
+    position: absolute;
+    z-index: 90;
+    left: 50%;
+    top: 30%;
+    transform: translate(-50%, 50%);
+    display: inline-block;
+    width: 64px;
+    height: 64px;
+  }
+  .lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 46px;
+    height: 46px;
+    margin: 1px;
+    border-radius: 50%;
+    border: 5px solid rgb(17, 85, 43);
+    border-color: rgb(28, 100, 52) transparent rgb(28, 100, 52) transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+  }
+  @keyframes lds-dual-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  .cover {
+    position: absolute;
+    width: 40em;
+    height: 20em;
+    background: rgba(246, 255, 246,0.46);
+    z-index: 50;
   }
 </style>
