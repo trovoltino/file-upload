@@ -20,7 +20,7 @@
     <div class="files-container">
       <div v-for="(file, key) in files" v-bind:key="key" class="file-container"> 
       <!-- <img class="preview" v-bind:ref="'preview'+parseInt( key )"/> -->
-        <b>{{ file.name.length>29 ? `${file.name.substring(0, 27)}...`: file.name}}</b>
+        <b>{{ file.name.length>28 ? `${file.name.substring(0, 26)}...`: file.name}}</b>
         <div class="remove-container">
           <a class="remove" v-on:click="removeFile( key )">Delete</a>
         </div>
@@ -34,8 +34,12 @@
 
 import axios from 'axios';
 
+//const liveUrl = 'http://localhost:5555/upload';
+//const demoUrl = 'https://files-uploads.herokuapp.com/upload';
+//const liveUrl = 'https://87.99.88.126:5550/upload';
 //const liveUrl = 'https://87.99.88.126:5550/upload';
 const liveUrl = 'https://files.adverts.lv:5550/upload';
+
 
 export default {
   name: 'FileUpload',
@@ -62,7 +66,6 @@ export default {
 
       data.append('name', 'my-file')
       data.append('file', file)
-
       
     },
     async submitFiles(err){
@@ -145,8 +148,6 @@ export default {
         this.files = [];
         this.fileSent = false;
       }, 20);
-      
-      
     },
     checkFile(){
       this.supportedFileFormat= true;
@@ -198,9 +199,11 @@ export default {
 <style lang="scss" scoped>
 
   .drop-form {
+    position:relative;
+    bottom: 0px;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
     width: 32em;
     height: 20em;
@@ -210,6 +213,7 @@ export default {
       margin: 1em 1em;
       content: '';
       position: absolute;
+      bottom: 0px;
       left: 0px;
       height: 14em;
       width: 30em;
@@ -221,7 +225,7 @@ export default {
   }
   .file-select {
     position: relative;
-    top: -10px;
+    bottom: 1.5em;
     z-index: 10;
   }
   .file-select > .select-button {
@@ -238,7 +242,7 @@ export default {
   }
   .reset-btn {
     position: relative;
-    top: -1em;
+    top: -2em;
     padding: 0.4em;
     z-index: 100;
     color: white;
@@ -248,7 +252,7 @@ export default {
   }
   .drop-email {
     position: relative;
-    top: -1.5em;
+    bottom: - 0.5em;
     width: 20em;
     height: 2em;
     text-align: center;
@@ -266,9 +270,14 @@ export default {
   }
   .files-container {
     position: absolute;
-    top: 56%;
-    left: 50%;
-    transform: translate(-50%, -90%);
+    bottom: 44%;
+    right: 50%;
+    -webkit-transform: translate(50%, 10%);
+         -moz-transform: translate(50%, 10%);
+         -ms-transform: translate(50%, 10%);
+         -o-transform: translate(50%, 10%);
+         transform: translate(50%, 10%);
+    
     z-index: 30;
     width: 20em;
     overflow: hidden;
@@ -321,7 +330,7 @@ export default {
     height: 5em;
     background: white;
     border-radius: 50%;
-    margin: -1.0em;
+    margin: 2.4em;
     fill: rgb(62, 64, 88);
   }
   .green {
@@ -329,6 +338,8 @@ export default {
       color: rgb(62, 64, 88);
     }
     width: 70%;
+    position: relative;
+    bottom: 1.7em;
   }
   .invisible {
     visibility: hidden;
