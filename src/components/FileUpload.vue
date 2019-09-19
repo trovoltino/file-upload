@@ -7,7 +7,7 @@
         <img v-if="!fileSent" v-bind:class="{ invisible: dropIconInvisible }" src="@/assets/images/download.svg" class="drop-icon" alt="drag and drop">
         <img v-if="fileSent" v-bind:class="{ active: fileSent }" src="@/assets/images/checked.svg" alt="">
         <span v-if="!fileSent" v-bind:class="{ invisible: !supportedFileFormat }" class="drop-files" name="sampleFile"><b>Choose PDF files</b> and drag it here.</span>
-        <span v-else class="green"><b>File has been uploaded successfully</b>, we will send results shortly.</span>
+        <span v-else class="green"><b>File has been uploaded successfully!</b><br> We will send results to {{this.email}} shortly.</span>
         <label v-if="!fileSent" class="file-select">
           <div class="select-button">Select File</div>
           <input  type="file" id="file" ref="file" multiple v-on:change="handleFileUpload()"/>
@@ -20,7 +20,7 @@
     <div class="files-container">
       <div v-for="(file, key) in files" v-bind:key="key" class="file-container"> 
       <!-- <img class="preview" v-bind:ref="'preview'+parseInt( key )"/> -->
-        <b>{{ file.name.length>25 ? `${file.name.substring(0, 23)}...`: file.name}}</b>
+        <b>{{ file.name.length>29 ? `${file.name.substring(0, 27)}...`: file.name}}</b>
         <div class="remove-container">
           <a class="remove" v-on:click="removeFile( key )">Delete</a>
         </div>
@@ -67,7 +67,7 @@ export default {
     },
     async submitFiles(err){
       if(this.email) {
-        this.processingFile = false;
+        this.processingFile = true;
         this.emailProvided = false;
         /*
           Initialize the form data
@@ -202,7 +202,7 @@ export default {
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    width: 28em;
+    width: 32em;
     height: 20em;
     background: rgb(214, 255, 214);
 
@@ -212,7 +212,7 @@ export default {
       position: absolute;
       left: 0px;
       height: 14em;
-      width: 25.8em;
+      width: 30em;
       border: dashed $border-color 2px;
     }
   }
@@ -237,7 +237,8 @@ export default {
     }
   }
   .reset-btn {
-    z-index: 10;
+    position: relative;
+    top: -1em;
     padding: 0.4em;
     z-index: 100;
     color: white;
@@ -269,7 +270,7 @@ export default {
     left: 50%;
     transform: translate(-50%, -90%);
     z-index: 30;
-   
+    width: 20em;
     overflow: hidden;
   }
   .file-container {
@@ -286,7 +287,7 @@ export default {
   }
   div.remove-container{
     text-align: center;
-    margin-left: 2em;
+    margin-left: 1em;
   }
 
   div.remove-container {
@@ -327,6 +328,7 @@ export default {
     b {
       color: rgb(62, 64, 88);
     }
+    width: 70%;
   }
   .invisible {
     visibility: hidden;
