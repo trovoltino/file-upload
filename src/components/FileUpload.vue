@@ -3,7 +3,7 @@
     <div v-if="processingFile" class="cover"></div>
     <div id="file-drag-drop">
       <form ref="fileform" class="drop-form">
-        <input v-model="email" v-bind:class="{ missingEmail: emailProvided }" type="text" placeholder="Please enter your Email to receve results" class="drop-email">
+        <input v-model="email" v-bind:class="{ missingEmail: emailProvided }" type="email" placeholder="Please enter your Email to receve results" class="drop-email">
         <img v-if="!fileSent" v-bind:class="{ invisible: dropIconInvisible }" src="@/assets/images/download.svg" class="drop-icon" alt="drag and drop">
         <img v-if="fileSent" v-bind:class="{ active: fileSent }" src="@/assets/images/checked.svg" alt="">
         <span v-if="!fileSent" v-bind:class="{ invisible: !supportedFileFormat }" class="drop-files" name="sampleFile"><b>Choose PDF files</b> and drag it here.</span>
@@ -17,13 +17,15 @@
       <div v-if="processingFile" class="lds-dual-ring"></div>
       <p v-bind:class="{ invisible: supportedFileFormat }" class="invalid-file">Please provide us with <b>.PDF</b> file format</p>
     </div>
-    <div class="files-container">
-      <div v-for="(file, key) in files" v-bind:key="key" class="file-container"> 
+    <div v-bind:style="files.length>2 ? 'width: 22em;' : 'width: 20em;' " class="files-container">
+      <div class="files-limiter">
+        <div v-for="(file, key) in files" v-bind:key="key" class="file-container"> 
       <!-- <img class="preview" v-bind:ref="'preview'+parseInt( key )"/> -->
         <b>{{ file.name.length>28 ? `${file.name.substring(0, 26)}...`: file.name}}</b>
         <div class="remove-container">
           <a class="remove" v-on:click="removeFile( key )">Delete</a>
         </div>
+      </div>
       </div>
       <a class="submit-button" v-on:click="submitFiles()" v-show="files.length > 0">Submit</a>
     </div>
@@ -279,7 +281,6 @@ export default {
          transform: translate(50%, 10%);
     
     z-index: 30;
-    width: 20em;
     overflow: hidden;
   }
   .file-container {
@@ -288,6 +289,10 @@ export default {
     align-items: flex-start;
     height: 1.4em;
     border-bottom: 1px solid gray;
+  }
+  .files-limiter {
+    overflow: auto;
+    max-height: 4.2em;
   }
   div.files-listing {
     img {
