@@ -1,12 +1,17 @@
 <template>
   <div class="file-upload">
+    <select class="manager-select" v-model="preSelect" @change="onSelectChange($event)">
+      <option :value="null" disabled hidden>Chose sales-manager or File-Check only</option>
+      <option class="option" v-for="(manager, index) in managerList" v-bind:key="index">{{manager}}</option>
+    </select>
     <div v-if="processingFile" class="cover"></div>
     <div id="file-drag-drop">
       <form ref="fileform" class="drop-form">
-        <input v-model="email" v-bind:class="{ missingEmail: emailProvided }" type="email" placeholder="Please enter your Email to receve results" class="drop-email">
+        <input v-model="email" v-bind:class="{ missingEmail: emailProvided }" v-bind:style="isManagerSelected ? 'bottom: 0.4em;' : 'bottom: -0.4em;'" type="email" placeholder="Please enter your Email to receve results" class="drop-email">
+        <textarea class="comments" v-if="isManagerSelected" v-model="comments" cols="30" rows="10" placeholder="Comments (if necessary)"></textarea>
         <img v-if="!fileSent" v-bind:class="{ invisible: dropIconInvisible }" src="@/assets/images/download.svg" class="drop-icon" alt="drag and drop">
         <img v-if="fileSent" v-bind:class="{ active: fileSent }" src="@/assets/images/checked.svg" alt="">
-        <span v-if="!fileSent" v-bind:class="{ invisible: !supportedFileFormat }" class="drop-files" name="sampleFile"><b>Choose PDF files</b> and drag it here.</span>
+        <span v-if="!fileSent" v-bind:class="{ invisible: !supportedFileFormat }" name="sampleFile"><b>Choose PDF files</b> and drag it here.</span>
         <span v-else class="green"><b>File has been uploaded successfully!</b><br> We will send results to {{this.email}} shortly.</span>
         <label v-if="!fileSent" class="file-select">
           <div class="select-button">Select File</div>
@@ -36,11 +41,9 @@
 
 import axios from 'axios';
 
-//const liveUrl = 'http://localhost:5555/upload';
+const liveUrl = 'http://localhost:5555/upload';
 //const demoUrl = 'https://files-uploads.herokuapp.com/upload';
-//const liveUrl = 'https://87.99.88.126:5550/upload';
-//const liveUrl = 'https://87.99.88.126:5550/upload';
-const liveUrl = 'https://files.adverts.lv:5550/upload';
+//const liveUrl = 'https://files.adverts.lv:5550/upload';
 
 
 export default {
@@ -58,7 +61,12 @@ export default {
       dropIconInvisible: false,
       supportedFileFormat: true,
       emailProvided: false,
-      processingFile: false
+      processingFile: false,
+      managerList: ['File-Check Only','Janis@gmail.com','Edgars@gmail.com','Juris@gmail.com'],
+      preSelect: null,
+      comments: '',
+      isManagerSelected: false,
+      managerSelected :''
     }
   },
   methods: {
@@ -86,7 +94,14 @@ export default {
           let file = this.files[i];
           formData.append('files[' + i + ']', file);
         }
-        formData.append('email', this.email);
+        if (this.isManagerSelected) {
+          formData.append('email', this.managerSelected);
+          formData.append('clientEmail',this.email);
+          formData.append('comments', this.comments);
+        } else {
+          formData.append('email', this.email);
+        }
+        
         try {
           const res = await axios.post(liveUrl,
           formData,
@@ -100,6 +115,7 @@ export default {
             this.fileSent = true;
             this.files = [];
             this.processingFile = false;
+            this.comments = '';
           }
         } catch {
           this.processingFile = false;
@@ -126,7 +142,6 @@ export default {
     },
     async removeFile(key) {
       this.files.splice( key, 1 );
-      
       if(this.files.length < 1){
         this.dropIconInvisible = false;
         await this.$nextTick;
@@ -145,11 +160,20 @@ export default {
           this.checkFile();
       }
     },
+    onSelectChange(event) {
+      if (event.target.value==='File-Check Only') {
+        this.isManagerSelected = false;
+      } else {
+        this.managerSelected = event.target.value;
+        this.isManagerSelected = true;
+      }
+      
+    },
     clearData(){
-      setTimeout(() => {
-        this.files = [];
-        this.fileSent = false;
-      }, 20);
+      this.files = [];
+      this.fileSent = false;
+      this.dropIconInvisible = false;
+      this.comments = '';
     },
     checkFile(){
       this.supportedFileFormat= true;
@@ -199,7 +223,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-
+  .file-upload {
+    background: rgb(214, 255, 214);
+    padding-top: 1em;
+  }
   .drop-form {
     position:relative;
     bottom: 0px;
@@ -209,7 +236,6 @@ export default {
     align-items: center;
     width: 32em;
     height: 20em;
-    background: rgb(214, 255, 214);
 
     &::after {
       margin: 1em 1em;
@@ -237,6 +263,8 @@ export default {
     background-color: $button-color;
     text-align: center;
     font-weight: bold;
+    position: relative;
+    bottom: 0.8em;
     cursor: pointer;
     &:hover {
       background: rgb(27, 170, 46);
@@ -254,12 +282,36 @@ export default {
   }
   .drop-email {
     position: relative;
-    bottom: - 0.5em;
+    bottom: -0.4em;
     width: 20em;
     height: 2em;
     text-align: center;
     font-size: 0.9em;
     border: solid $border-color 2px;
+  }
+  .comments{
+    position: absolute;
+    top: 2.4em;
+    width: 20em;
+    height: 2em;
+    font-size: 1.1em;
+    border: solid $border-color 2px;
+    z-index: 40;
+  }
+  .comments::placeholder {
+    text-align: center;
+  }
+  .comments:hover {
+    height: 6em;
+  }
+  .manager-select {
+    height: 2em;
+    font-size: 0.9em;
+    border: solid $border-color 2px;
+    z-index: 10;
+    text-align: center;
+    padding: 0.2em 0.3em;
+    margin-bottom: 1em;
   }
   .missingEmail::placeholder{
     color:red;
@@ -267,12 +319,13 @@ export default {
   }
   .drop-icon {
     position: relative;
+    bottom: -1em;
     width: 4.3em;
     height: 4.3em;
   }
   .files-container {
     position: absolute;
-    bottom: 44%;
+    bottom: 34%;
     right: 50%;
     -webkit-transform: translate(50%, 10%);
          -moz-transform: translate(50%, 10%);
@@ -357,8 +410,8 @@ export default {
     top: 50%;
     transform: translate(-50%, 40%);
   }
-  // Loading icon
 
+  // Loading icon
   .lds-dual-ring {
     position: absolute;
     z-index: 90;
