@@ -38,8 +38,6 @@ import axios from 'axios';
 
 //const liveUrl = 'http://localhost:5555/upload';
 //const demoUrl = 'https://files-uploads.herokuapp.com/upload';
-//const liveUrl = 'https://87.99.88.126:5550/upload';
-//const liveUrl = 'https://87.99.88.126:5550/upload';
 const liveUrl = 'https://files.adverts.lv:5550/upload';
 
 
@@ -146,10 +144,9 @@ export default {
       }
     },
     clearData(){
-      setTimeout(() => {
-        this.files = [];
-        this.fileSent = false;
-      }, 20);
+      this.files = [];
+      this.fileSent = false;
+      this.dropIconInvisible = false;
     },
     checkFile(){
       this.supportedFileFormat= true;
