@@ -12,7 +12,11 @@
         <img v-if="!fileSent" v-bind:class="{ invisible: dropIconInvisible }" src="@/assets/images/download.svg" class="drop-icon" alt="drag and drop">
         <img v-if="fileSent" v-bind:class="{ active: fileSent }" src="@/assets/images/checked.svg" alt="">
         <span v-if="!fileSent" v-bind:class="{ invisible: !supportedFileFormat }" name="sampleFile"><b>Choose PDF files</b> and drag it here.</span>
-        <span v-else class="green"><b>File has been uploaded successfully!</b><br> We will send results to {{this.email}} shortly.</span>
+        <span v-else class="green">
+          <b>File has been uploaded successfully!</b>
+          <br><p v-if="isManagerSelected">And will be processed shortly.</p>
+              <p v-else >We will send results to {{this.email}} shortly.</p>
+        </span>
         <label v-if="!fileSent" class="file-select">
           <div class="select-button">Select File</div>
           <input  type="file" id="file" ref="file" multiple v-on:change="handleFileUpload()"/>
@@ -45,7 +49,6 @@ const liveUrl = 'http://localhost:5555/upload';
 //const demoUrl = 'https://files-uploads.herokuapp.com/upload';
 //const liveUrl = 'https://files.adverts.lv:5550/upload';
 
-
 export default {
   name: 'FileUpload',
   props: {
@@ -62,7 +65,10 @@ export default {
       supportedFileFormat: true,
       emailProvided: false,
       processingFile: false,
-      managerList: ['File-Check Only','Janis@gmail.com','Edgars@gmail.com','Juris@gmail.com'],
+      managerList: ['Agita@adverts.lv','Andra@adverts.lv',
+      'Anna.Berzina@adverts.lv','Baiba@adverts.lv', 'Deniss@adverts.lv',
+      'Edgars@adverts.lv', 'Evija@adverts.lv', 'Guna@adverts.lv', 'ilona@adverts.lv',
+      'inese@adverts.lv', 'Inga.Arbidane@adverts.lv', 'adverts@adverts.lv', '', 'File-Check Only'],
       preSelect: null,
       comments: '',
       isManagerSelected: false,
