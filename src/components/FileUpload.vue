@@ -295,7 +295,7 @@ export default {
   .comments{
     position: absolute;
     top: 2.4em;
-    width: 20em;
+    width: 20.2em;
     height: 2em;
     font-size: 1.1em;
     border: solid $border-color 2px;
