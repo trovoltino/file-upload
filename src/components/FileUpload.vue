@@ -1,9 +1,6 @@
 <template>
   <div class="file-upload">
-    <select class="manager-select" v-model="preSelect" @change="onSelectChange($event)">
-      <option :value="null" disabled hidden>Chose sales-manager or File-Check only</option>
-      <option class="option" v-for="(manager, index) in managerList" v-bind:key="index">{{manager}}</option>
-    </select>
+    <MultiSelect v-on:managerSelected="onSelectChange" class="manager-select"/>
     <div v-if="processingFile" class="cover"></div>
     <div id="file-drag-drop">
       <form ref="fileform" class="drop-form">
@@ -44,13 +41,16 @@
 <script>
 
 import axios from 'axios';
-
-const liveUrl = 'http://localhost:5555/upload';
+import MultiSelect from '@/components/MultiSelect';
+//const liveUrl = 'http://localhost:5555/';
 //const demoUrl = 'https://files-uploads.herokuapp.com/upload';
-//const liveUrl = 'https://files.adverts.lv:5550/upload';
+const liveUrl = 'https://files.adverts.lv:5550/';
 
 export default {
   name: 'FileUpload',
+  components: {
+    MultiSelect
+  },
   props: {
     msg: String
   },
@@ -65,10 +65,6 @@ export default {
       supportedFileFormat: true,
       emailProvided: false,
       processingFile: false,
-      managerList: ['Agita@adverts.lv','Andra@adverts.lv',
-      'Anna.Berzina@adverts.lv','Baiba@adverts.lv', 'Deniss@adverts.lv',
-      'Edgars@adverts.lv', 'Evija@adverts.lv', 'Guna@adverts.lv', 'ilona@adverts.lv',
-      'inese@adverts.lv', 'Inga.Arbidane@adverts.lv', 'adverts@adverts.lv', '', 'File-Check Only'],
       preSelect: null,
       comments: '',
       isManagerSelected: false,
@@ -109,7 +105,7 @@ export default {
         }
         
         try {
-          const res = await axios.post(liveUrl,
+          const res = await axios.post(`${liveUrl}upload`,
           formData,
           {
             headers: {
@@ -166,11 +162,11 @@ export default {
           this.checkFile();
       }
     },
-    onSelectChange(event) {
-      if (event.target.value==='File-Check Only') {
+    onSelectChange(manager) {
+      if (manager=='File-Check Only') {
         this.isManagerSelected = false;
       } else {
-        this.managerSelected = event.target.value;
+        this.managerSelected = manager;
         this.isManagerSelected = true;
       }
       
@@ -273,7 +269,7 @@ export default {
     bottom: 0.8em;
     cursor: pointer;
     &:hover {
-      background: rgb(27, 170, 46);
+      background: $button-active;
     }
   }
   .reset-btn {
@@ -289,7 +285,7 @@ export default {
   .drop-email {
     position: relative;
     bottom: -0.4em;
-    width: 20em;
+    width: 20.4em;
     height: 2em;
     text-align: center;
     font-size: 0.9em;
@@ -310,14 +306,14 @@ export default {
   .comments:hover {
     height: 6em;
   }
-  .manager-select {
-    height: 2em;
-    font-size: 0.9em;
-    border: solid $border-color 2px;
+  .manager-select { 
     z-index: 10;
     text-align: center;
-    padding: 0.2em 0.3em;
+    margin: auto;
     margin-bottom: 1em;
+    width: 18em;
+    background: white;
+
   }
   .missingEmail::placeholder{
     color:red;
@@ -365,11 +361,14 @@ export default {
 
   div.remove-container {
     a {
-      background: red;
+      background: $button-color;
       color: white;
       cursor: pointer;
       margin: 2px;
       padding: 1px 5px;
+      &:hover {
+        background: $button-active;
+      } 
     }
   }
   a.submit-button{
@@ -387,7 +386,7 @@ export default {
     cursor: pointer;
     
     &:hover {
-      background: rgb(27, 170, 46);
+      background: $button-active;
     }
   }
   .active {
