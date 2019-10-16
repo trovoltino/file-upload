@@ -448,8 +448,9 @@ export default {
   }
   .cover {
     position: absolute;
-    width: 40em;
-    height: 20em;
+    top: -1em;
+    width: 32em;
+    height: 100%;
     background: rgba(246, 255, 246,0.46);
     z-index: 50;
   }
