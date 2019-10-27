@@ -41,7 +41,6 @@
 <script>
 
 import axios from 'axios';
-
 import MultiSelect from '@/components/MultiSelect';
 //const liveUrl = 'http://localhost:5555/';
 //const demoUrl = 'https://files-uploads.herokuapp.com/upload';
@@ -93,16 +92,16 @@ export default {
           Iteate over any file sent over appending the files
           to the form data.
         */
-        for( var i = 0; i < this.files.length; i++ ){
-          let file = this.files[i];
-          formData.append('files[' + i + ']', file);
-        }
         if (this.isManagerSelected) {
           formData.append('email', this.managerSelected);
           formData.append('clientEmail',this.email);
           formData.append('comments', this.comments);
         } else {
           formData.append('email', this.email);
+        }
+        for( var i = 0; i < this.files.length; i++ ){
+          let file = this.files[i];
+          formData.append('files[' + i + ']', file);
         }
         
         try {
@@ -181,7 +180,7 @@ export default {
     checkFile(){
       this.supportedFileFormat= true;
       this.files.forEach(file => {
-        if (/\.(pdf|xml)/.test(file.name)) {
+        if (/\.(pdf|xml|PDF|Pdf)/.test(file.name)) {
           this.dropIconInvisible = true;
         } else {
           this.supportedFileFormat= false;
@@ -413,7 +412,7 @@ export default {
     font-size: 1.2em;
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 55%;
     transform: translate(-50%, 40%);
   }
 
