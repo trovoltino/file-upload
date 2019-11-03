@@ -105,20 +105,21 @@ export default {
         }
         
         try {
-          const res = await axios.post(`${liveUrl}upload`,
+          axios.post(`${liveUrl}upload`,
           formData,
           {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
+          }).then((res) => {
+            this.response = res['data'];
+            if(res.status == 200) {
+              this.fileSent = true;
+              this.files = [];
+              this.processingFile = false;
+              this.comments = '';
+            }
           });
-          this.response = res['data'];
-          if(res['data'] == 'File uploaded!') {
-            this.fileSent = true;
-            this.files = [];
-            this.processingFile = false;
-            this.comments = '';
-          }
         } catch {
           this.processingFile = false;
           this.response = err;
