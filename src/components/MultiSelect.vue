@@ -70,6 +70,7 @@ export default {
     }
     .selected-option {
       background: white;
+      color: black;
       width: 100%;
       font-size: 0.9em;
       border: solid $border-color 2px;

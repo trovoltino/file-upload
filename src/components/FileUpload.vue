@@ -17,7 +17,6 @@
           class="drop-email"
           v-bind:style="!fileSent ? 'bottom: 0.3em;' : 'bottom: -2.2em;;'"
         >
-        
         <textarea class="comments" 
           v-if="isManagerSelected"
           v-model="comments" 
