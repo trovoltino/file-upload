@@ -3,10 +3,34 @@
     <MultiSelect v-on:managerSelected="onSelectChange" class="manager-select"/>
     <div v-if="processingFile" class="cover"></div>
     <div id="file-drag-drop">
-      <form ref="fileform" class="drop-form">
-        <input v-model="email" v-bind:class="{ missingEmail: emailProvided }" v-bind:style="isManagerSelected ? 'bottom: 0.4em;' : 'bottom: -0.4em;'" type="email" placeholder="Please enter your Email to receve results" class="drop-email">
-        <textarea class="comments" v-if="isManagerSelected" v-model="comments" cols="30" rows="10" placeholder="Comments (if necessary)"></textarea>
-        <img v-if="!fileSent" v-bind:class="{ invisible: dropIconInvisible }" src="@/assets/images/download.svg" class="drop-icon" alt="drag and drop">
+      <form ref="fileform" class="drop-form" v-bind:style="isManagerSelected ? 'height: 23em;' : 'height: 20em;'">
+        <input v-model="email" 
+          v-bind:class="{ missingEmail: emailProvided }" 
+          v-bind:style="isManagerSelected ? 'bottom: 0.4em;' : 'bottom: -0.4em;'" 
+          type="email" placeholder="Please enter your Email to receve results" 
+          class="drop-email"
+        >
+        <input v-model="orderNumber"
+          type="text" 
+          placeholder="Please provide order number, if any"
+          v-if="isManagerSelected"
+          class="drop-email"
+          v-bind:style="!fileSent ? 'bottom: 0.3em;' : 'bottom: -2.2em;;'"
+        >
+        <textarea class="comments" 
+          v-if="isManagerSelected"
+          v-model="comments" 
+          cols="30" 
+          rows="10" 
+          placeholder="Comments (if necessary)">
+        </textarea>
+        <img 
+          v-if="!fileSent" 
+          v-bind:class="{ invisible: dropIconInvisible }" 
+          src="@/assets/images/download.svg" 
+          class="drop-icon" 
+          alt="drag and drop"
+        >
         <img v-if="fileSent" v-bind:class="{ active: fileSent }" src="@/assets/images/checked.svg" alt="">
         <span v-if="!fileSent" v-bind:class="{ invisible: !supportedFileFormat }" name="sampleFile"><b>Choose PDF files</b> and drag it here.</span>
         <span v-else class="green">
@@ -42,7 +66,7 @@
 
 import axios from 'axios';
 import MultiSelect from '@/components/MultiSelect';
-//const liveUrl = 'http://localhost:5555/';
+// const liveUrl = 'http://localhost:5555/';
 //const demoUrl = 'https://files-uploads.herokuapp.com/upload';
 const liveUrl = 'https://files.adverts.lv:5550/';
 
@@ -60,6 +84,7 @@ export default {
       files: [],
       response: '',
       email: null,
+      orderNumber: null,
       fileSent: false,
       dropIconInvisible: false,
       supportedFileFormat: true,
@@ -96,6 +121,7 @@ export default {
           formData.append('email', this.managerSelected);
           formData.append('clientEmail',this.email);
           formData.append('comments', this.comments);
+          formData.append('orderNumber', this.orderNumber);
         } else {
           formData.append('email', this.email);
         }
@@ -118,6 +144,7 @@ export default {
               this.files = [];
               this.processingFile = false;
               this.comments = '';
+              this.orderNumber = '';
             }
           });
         } catch {
@@ -295,7 +322,7 @@ export default {
   .comments{
     position: absolute;
     top: 2.4em;
-    width: 20.2em;
+    width: 20.3em;
     height: 2em;
     font-size: 1.1em;
     border: solid $border-color 2px;
@@ -311,7 +338,7 @@ export default {
     z-index: 10;
     text-align: center;
     margin: auto;
-    margin-bottom: 1em;
+    margin-bottom: 0.8em;
     width: 18em;
     background: white;
 
