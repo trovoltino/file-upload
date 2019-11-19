@@ -7,12 +7,17 @@
         <input v-model="email" 
           v-bind:class="{ missingEmail: emailProvided }" 
           v-bind:style="isManagerSelected ? 'bottom: 0.4em;' : 'bottom: -0.4em;'" 
-          type="email" placeholder="Please enter your Email to receve results" 
+          type="email" 
+          placeholder="Please enter your Email to receve results"
+          onfocus="this.placeholder=''" 
+          onblur="this.placeholder='Please enter your Email to receve results'"
           class="drop-email"
         >
         <input v-model="orderNumber"
           type="text" 
           placeholder="Please provide order number, if any"
+          onfocus="this.placeholder=''" 
+          onblur="this.placeholder='Please provide order number, if any'"
           v-if="isManagerSelected"
           class="drop-email"
           v-bind:style="!fileSent ? 'bottom: 0.3em;' : 'bottom: -2.2em;;'"
@@ -22,7 +27,11 @@
           v-model="comments" 
           cols="30" 
           rows="10" 
-          placeholder="Comments (if necessary)">
+          placeholder="Comments (if necessary)"
+          onfocus="this.placeholder=''" 
+          onblur="this.placeholder='Comments (if necessary)'"
+        >
+          
         </textarea>
         <img 
           v-if="!fileSent" 
