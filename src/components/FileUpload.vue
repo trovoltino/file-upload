@@ -313,7 +313,7 @@ export default {
   .drop-email {
     position: relative;
     bottom: -0.4em;
-    width: 20.4em;
+    width: 20.5em;
     height: 2em;
     text-align: center;
     font-size: 0.9em;
@@ -322,7 +322,7 @@ export default {
   .comments{
     position: absolute;
     top: 2.4em;
-    width: 20.3em;
+    width: 20.4em;
     height: 2em;
     font-size: 1.1em;
     border: solid $border-color 2px;
