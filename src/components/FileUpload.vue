@@ -277,13 +277,13 @@ export default {
     height: 20em;
 
     &::after {
-      margin: 1em 1em;
+      margin: 1em 3.9em;
       content: '';
       position: absolute;
       bottom: 0px;
       left: 0px;
       height: 14em;
-      width: 30em;
+      width: 24em;
       border: dashed $border-color 2px;
     }
   }
