@@ -20,7 +20,7 @@
           onblur="this.placeholder='Please provide order number, if any'"
           v-if="isManagerSelected"
           class="drop-email"
-          v-bind:style="!fileSent ? 'bottom: 0.3em;' : 'bottom: -2.2em;;'"
+          v-bind:style="!fileSent ? 'bottom: 0em;' : 'bottom: -2.2em;;'"
         >
         <textarea class="comments" 
           v-if="isManagerSelected"
@@ -41,7 +41,9 @@
           alt="drag and drop"
         >
         <img v-if="fileSent" v-bind:class="{ active: fileSent }" src="@/assets/images/checked.svg" alt="">
-        <span v-if="!fileSent" v-bind:class="{ invisible: !supportedFileFormat }" name="sampleFile"><b>Choose PDF files</b> and drag it here.</span>
+        <span class="file-info" v-if="!fileSent" v-bind:class="{ invisible: !supportedFileFormat }" name="sampleFile">
+          <b>Choose PDF or ZIP/RAR Archive with PDF files</b> and drag it here.
+        </span>
         <span v-else class="green">
           <b>File has been uploaded successfully!</b>
           <br><p v-if="isManagerSelected">And will be processed shortly.</p>
@@ -217,7 +219,7 @@ export default {
     checkFile(){
       this.supportedFileFormat= true;
       this.files.forEach(file => {
-        if (/\.(pdf|xml|PDF|Pdf)/.test(file.name)) {
+        if (/\.(pdf|xml|PDF|Pdf|zip|Zip|ZIP|rar|RAR|Rar)/.test(file.name)) {
           this.dropIconInvisible = true;
         } else {
           this.supportedFileFormat= false;
@@ -385,6 +387,9 @@ export default {
   .files-limiter {
     overflow: auto;
     max-height: 4.2em;
+  }
+  .file-info {
+    width: 70%;
   }
   div.files-listing {
     img {

@@ -3,7 +3,7 @@
     <div class="selected-option" @click="isActive = true">{{selectedOption}}</div>
     <ul v-if="isActive" class="options-container">
       <li class="option" @click="selectManager(manager)" v-for="(manager, index) in managerList" :key="index">{{manager}}</li>
-      <li class="option" style="margin-top: 1.6em;" @click="selectManager('File-Check Only')">File-Check Only</li>
+      <li class="option" style="padding-top: 1.6em;" @click="selectManager('File-Check Only')">File-Check Only</li>
     </ul>
   </div>
 </template>
